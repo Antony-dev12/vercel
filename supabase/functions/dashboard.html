@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard - LDVS Platform</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+body{
+font-family:system-ui,sans-serif;
+max-width:800px;
+margin:50px auto;
+padding:20px;
+background:#f5f5f5;
+}
+
+h1{color:#333;}
+
+.card{
+background:white;
+border-radius:8px;
+padding:20px;
+margin:20px 0;
+box-shadow:0 2px 4px rgba(0,0,0,0.1);
+}
+
+.button{
+display:inline-block;
+padding:10px 20px;
+background:#3b82f6;
+color:white;
+text-decoration:none;
+border-radius:6px;
+margin-top:10px;
+}
+
+.button:hover{
+background:#2563eb;
+}
+
+.logout{
+background:#ef4444;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>📊 Dashboard</h1>
+
+<div class="card">
+<h2>Welcome <span id="user-email"></span></h2>
+<p>Your LDVS score will appear here once you connect your platforms.</p>
+
+<a href="connect-platforms.html" class="button">Connect Platforms</a>
+<button onclick="logout()" class="button logout">Logout</button>
+
+</div>
+
+<div class="card">
+<h3>Connected Platforms</h3>
+<p id="platform-count">Loading...</p>
+</div>
+
+<script>
+
+/* SUPABASE CONFIG */
+
+const SUPABASE_URL='https://xagbguncsimivveezckc.supabase.co'
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhZ2JndW5jc2ltaXZ2ZWV6Y2tjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNjMyNDYsImV4cCI6MjA4ODYzOTI0Nn0.ex9vOixzsQ-p4gh9wQ5I3akcQAitdNlyv5XEgZYVc9k'
+
+const client=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY)
+
+
+/* CHECK SESSION */
+
+client.auth.getSession().then(({data})=>{
+
+if(!data.session){
+window.location.href="login.html"
+}else{
+
+loadDashboard()
+
+}
+
+})
+
+
+/* LOAD DASHBOARD DATA */
+
+async function loadDashboard(){
+
+const {data:{user}}=await client.auth.getUser()
+
+document.getElementById("user-email").textContent=user.email
+
+const {data:connections}=await client
+.from("platform_connections")
+.select("*")
+.eq("user_id",user.id)
+
+const count=connections?connections.length:0
+
+document.getElementById("platform-count").textContent=count+" platform(s) connected"
+
+}
+
+
+/* LOGOUT */
+
+async function logout(){
+
+await client.auth.signOut()
+
+window.location.href="login.html"
+
+}
+
+</script>
+
+</body>
+</html>

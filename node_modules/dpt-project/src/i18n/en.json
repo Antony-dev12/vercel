@@ -1,0 +1,86 @@
+{
+  "nav": {
+    "dashboard":       "Dashboard",
+    "history":         "Score History",
+    "recommendations": "Recommendations",
+    "settings":        "Settings",
+    "logout":          "Log out"
+  },
+  "auth": {
+    "login":           "Sign In",
+    "register":        "Create Account",
+    "email":           "Email address",
+    "password":        "Password",
+    "forgotPassword":  "Forgot password?",
+    "noAccount":       "Don't have an account?",
+    "hasAccount":      "Already have an account?",
+    "businessName":    "Business name",
+    "sector":          "Business sector",
+    "location":        "Location",
+    "name":            "Full name"
+  },
+  "onboarding": {
+    "step1Title":      "Tell us about your business",
+    "step2Title":      "Connect your platforms",
+    "step3Title":      "Your first score is ready!",
+    "connectFacebook": "Connect Facebook",
+    "connectGoogle":   "Connect Google Business",
+    "skipForNow":      "Skip for now",
+    "calculateScore":  "Calculate My Score"
+  },
+  "dashboard": {
+    "yourScore":        "Your Digital Presence Score",
+    "lastUpdated":      "Last updated",
+    "scoreBreakdown":   "Score Breakdown",
+    "profileComplete":  "Profile Completeness",
+    "postFreq":         "Posting Frequency",
+    "engagement":       "Engagement Level",
+    "responsiveness":   "Responsiveness",
+    "platformPresence": "Platform Presence",
+    "recalculate":      "Recalculate Score",
+    "autoFill":         "Auto-filled from connected platforms"
+  },
+  "grades": {
+    "A": "Excellent",
+    "B": "Good",
+    "C": "Average",
+    "D": "Needs Work",
+    "F": "Critical"
+  },
+  "recommendations": {
+    "title": "Recommendations",
+    "high":  "High Priority",
+    "mid":   "Medium Priority",
+    "low":   "Keep It Up"
+  },
+  "history": {
+    "title":     "Score History",
+    "session":   "Session",
+    "change":    "Change",
+    "noHistory": "No score history yet. Calculate your first score!"
+  },
+  "settings": {
+    "title":        "Settings",
+    "profile":      "Business Profile",
+    "security":     "Password & Security",
+    "platforms":    "Connected Platforms",
+    "language":     "Language",
+    "deleteAccount":"Delete Account",
+    "saveChanges":  "Save Changes",
+    "lastSynced":   "Last synced",
+    "syncNow":      "Sync Now",
+    "connected":    "Connected",
+    "notConnected": "Not connected"
+  },
+  "common": {
+    "loading":  "Loading...",
+    "save":     "Save",
+    "cancel":   "Cancel",
+    "back":     "Back",
+    "next":     "Next",
+    "done":     "Done",
+    "connect":  "Connect",
+    "error":    "Something went wrong. Please try again.",
+    "required": "This field is required"
+  }
+}

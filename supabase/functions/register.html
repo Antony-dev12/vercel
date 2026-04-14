@@ -1,0 +1,93 @@
+<script>
+
+const SUPABASE_URL = "https://xagbguncsimivveezckc.supabase.co"
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhZ2JndW5jc2ltaXZ2ZWV6Y2tjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNjMyNDYsImV4cCI6MjA4ODYzOTI0Nn0.ex9vOixzsQ-p4gh9wQ5I3akcQAitdNlyv5XEgZYVc9k'
+
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+
+document.getElementById("register-form").addEventListener("submit", async (e) => {
+
+e.preventDefault()
+
+const email = document.getElementById("email").value
+const password = document.getElementById("password").value
+const name = document.getElementById("name").value
+const business_name = document.getElementById("business_name").value
+const sector = document.getElementById("sector").value
+const location = document.getElementById("location").value
+
+const messageDiv = document.getElementById("message")
+
+try {
+
+const { data, error } = await client.auth.signUp({
+
+email: email,
+password: password,
+
+options: {
+data: {
+name: name,
+business_name: business_name,
+sector: sector,
+location: location
+}
+}
+
+})
+
+if (error) throw error
+
+messageDiv.className = "success"
+messageDiv.textContent = "Registration successful! Redirecting..."
+
+setTimeout(() => {
+
+window.location.href = "connect-platforms.html"
+
+}, 2000)
+
+}
+
+catch (error) {
+
+messageDiv.className = "error"
+messageDiv.textContent = error.message
+
+}
+
+})
+
+
+
+async function loginWithGoogle(){
+
+await client.auth.signInWithOAuth({
+
+provider:"google",
+
+options:{
+redirectTo:window.location.origin+"/connect-platforms.html"
+}
+
+})
+
+}
+
+
+async function loginWithFacebook(){
+
+await client.auth.signInWithOAuth({
+
+provider:"facebook",
+
+options:{
+redirectTo:window.location.origin+"/connect-platforms.html"
+}
+
+})
+
+}
+
+</script>

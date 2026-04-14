@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Connect Your Platforms</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+max-width:700px;
+margin:0 auto;
+padding:20px;
+background:#f5f5f5;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+h1{color:#333;}
+
+.platform-card{
+background:white;
+border-radius:12px;
+padding:25px;
+margin-bottom:20px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+display:flex;
+justify-content:space-between;
+align-items:center;
+transition:all 0.3s;
+}
+
+.platform-card.connected{
+background:#f0fdf4;
+border-left:4px solid #10b981;
+}
+
+.platform-info{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.platform-icon{font-size:40px;}
+
+.platform-name{
+font-size:18px;
+font-weight:600;
+margin:0;
+}
+
+.platform-desc{
+color:#666;
+margin:5px 0 0;
+font-size:14px;
+}
+
+.status-badge{
+padding:4px 12px;
+border-radius:20px;
+font-size:14px;
+background:#e5e7eb;
+color:#4b5563;
+}
+
+.connected .status-badge{
+background:#10b981;
+color:white;
+}
+
+.button{
+padding:10px 24px;
+border-radius:6px;
+border:none;
+font-size:14px;
+font-weight:500;
+cursor:pointer;
+}
+
+.connect-btn{
+background:#3b82f6;
+color:white;
+}
+
+.disconnect-btn{
+background:#ef4444;
+color:white;
+}
+
+.note{
+background:#fef3c7;
+border-radius:8px;
+padding:15px;
+margin-top:30px;
+font-size:14px;
+color:#92400e;
+}
+
+.back-link{
+color:#3b82f6;
+text-decoration:none;
+}
+
+.back-link:hover{
+text-decoration:underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h1>🔌 Connect Your Platforms</h1>
+<a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+</div>
+
+<p style="color:#666;margin-bottom:30px;">
+Connect your business accounts to pull metrics and calculate your LDVS score.
+</p>
+
+<!-- FACEBOOK -->
+<div class="platform-card" id="facebook-card">
+<div class="platform-info">
+<span class="platform-icon">📘</span>
+<div>
+<h3 class="platform-name">Facebook</h3>
+<p class="platform-desc">Connect your Facebook Page to pull posts and engagement</p>
+</div>
+</div>
+
+<div>
+<span class="status-badge" id="facebook-status">Not Connected</span>
+<button class="button connect-btn" id="facebook-btn" onclick="connectFacebook()">Connect</button>
+</div>
+</div>
+
+<!-- INSTAGRAM -->
+<div class="platform-card" id="instagram-card">
+<div class="platform-info">
+<span class="platform-icon">📷</span>
+<div>
+<h3 class="platform-name">Instagram</h3>
+<p class="platform-desc">Connect Instagram Business account for posts and insights</p>
+</div>
+</div>
+
+<div>
+<span class="status-badge" id="instagram-status">Not Connected</span>
+<button class="button connect-btn" id="instagram-btn" onclick="connectInstagram()">Connect</button>
+</div>
+</div>
+
+<!-- GOOGLE -->
+<div class="platform-card" id="google-card">
+<div class="platform-info">
+<span class="platform-icon">📍</span>
+<div>
+<h3 class="platform-name">Google Business Profile</h3>
+<p class="platform-desc">Connect to pull reviews and customer interactions</p>
+</div>
+</div>
+
+<div>
+<span class="status-badge" id="google-status">Not Connected</span>
+<button class="button connect-btn" id="google-btn" onclick="connectGoogle()">Connect</button>
+</div>
+</div>
+
+<div class="note">
+<strong>Note:</strong> Connect at least one platform to generate your LDVS score.
+</div>
+
+<script>
+
+/* SUPABASE CONFIG */
+
+const SUPABASE_URL='https://xagbguncsimivveezckc.supabase.co'
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhZ2JndW5jc2ltaXZ2ZWV6Y2tjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNjMyNDYsImV4cCI6MjA4ODYzOTI0Nn0.ex9vOixzsQ-p4gh9wQ5I3akcQAitdNlyv5XEgZYVc9k'
+
+const client=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY)
+
+
+/* CHECK LOGIN */
+
+client.auth.getSession().then(({data})=>{
+if(!data.session){
+window.location.href='login.html'
+}else{
+handleOAuthRedirect()
+loadConnections()
+}
+})
+
+
+/* HANDLE OAUTH REDIRECT */
+
+async function handleOAuthRedirect(){
+
+const urlParams=new URLSearchParams(window.location.search)
+const provider=urlParams.get("provider")
+
+if(provider){
+
+const {data:{user}}=await client.auth.getUser()
+
+await client.from("platform_connections").insert({
+user_id:user.id,
+platform:provider,
+connected_at:new Date()
+})
+
+history.replaceState({},document.title,window.location.pathname)
+
+loadConnections()
+
+}
+
+}
+
+
+/* LOAD CONNECTIONS */
+
+async function loadConnections(){
+
+const {data:{user}}=await client.auth.getUser()
+
+const {data:connections}=await client
+.from("platform_connections")
+.select("*")
+.eq("user_id",user.id)
+
+connections?.forEach(conn=>{
+
+const platform=conn.platform
+
+const card=document.getElementById(`${platform}-card`)
+const status=document.getElementById(`${platform}-status`)
+const btn=document.getElementById(`${platform}-btn`)
+
+if(card){
+
+card.classList.add("connected")
+
+status.textContent="Connected"
+
+btn.textContent="Disconnect"
+
+btn.className="button disconnect-btn"
+
+btn.onclick=()=>disconnectPlatform(platform,conn.id)
+
+}
+
+})
+
+}
+
+
+/* CONNECT FUNCTIONS */
+
+async function connectFacebook(){
+
+await client.auth.signInWithOAuth({
+provider:"facebook",
+options:{
+scopes:"pages_read_engagement,pages_show_list",
+queryParams:{provider:"facebook"},
+redirectTo:window.location.origin+"/connect-platforms.html?provider=facebook"
+}
+})
+
+}
+
+async function connectInstagram(){
+
+await client.auth.signInWithOAuth({
+provider:"facebook",
+options:{
+scopes:"instagram_basic,pages_read_engagement",
+queryParams:{provider:"instagram"},
+redirectTo:window.location.origin+"/connect-platforms.html?provider=instagram"
+}
+})
+
+}
+
+async function connectGoogle(){
+
+await client.auth.signInWithOAuth({
+provider:"google",
+options:{
+scopes:"https://www.googleapis.com/auth/business.manage",
+redirectTo:window.location.origin+"/connect-platforms.html?provider=google"
+}
+})
+
+}
+
+
+/* DISCONNECT */
+
+async function disconnectPlatform(platform,id){
+
+if(confirm(`Disconnect ${platform}?`)){
+
+await client
+.from("platform_connections")
+.delete()
+.eq("id",id)
+
+loadConnections()
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

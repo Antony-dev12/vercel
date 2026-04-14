@@ -1,0 +1,86 @@
+{
+  "nav": {
+    "dashboard":       "Dashibodi",
+    "history":         "Historia ya Alama",
+    "recommendations": "Mapendekezo",
+    "settings":        "Mipangilio",
+    "logout":          "Toka"
+  },
+  "auth": {
+    "login":           "Ingia",
+    "register":        "Fungua Akaunti",
+    "email":           "Barua pepe",
+    "password":        "Nywila",
+    "forgotPassword":  "Umesahau nywila?",
+    "noAccount":       "Huna akaunti?",
+    "hasAccount":      "Una akaunti tayari?",
+    "businessName":    "Jina la biashara",
+    "sector":          "Sekta ya biashara",
+    "location":        "Mahali",
+    "name":            "Jina kamili"
+  },
+  "onboarding": {
+    "step1Title":      "Tuambie kuhusu biashara yako",
+    "step2Title":      "Unganisha majukwaa yako",
+    "step3Title":      "Alama yako ya kwanza iko tayari!",
+    "connectFacebook": "Unganisha Facebook",
+    "connectGoogle":   "Unganisha Google Biashara",
+    "skipForNow":      "Ruka kwa sasa",
+    "calculateScore":  "Hesabu Alama Yangu"
+  },
+  "dashboard": {
+    "yourScore":        "Alama ya Uwepo Wako Mtandaoni",
+    "lastUpdated":      "Imesasishwa",
+    "scoreBreakdown":   "Maelezo ya Alama",
+    "profileComplete":  "Ukamilishaji wa Wasifu",
+    "postFreq":         "Mara za Kuchapisha",
+    "engagement":       "Kiwango cha Kushiriki",
+    "responsiveness":   "Ujibu wa Haraka",
+    "platformPresence": "Uwepo kwenye Majukwaa",
+    "recalculate":      "Hesabu Upya",
+    "autoFill":         "Imejazwa kiotomatiki kutoka kwenye majukwaa"
+  },
+  "grades": {
+    "A": "Bora Sana",
+    "B": "Nzuri",
+    "C": "Wastani",
+    "D": "Inahitaji Kazi",
+    "F": "Tatizo"
+  },
+  "recommendations": {
+    "title": "Mapendekezo",
+    "high":  "Kipaumbele cha Juu",
+    "mid":   "Kipaumbele cha Kati",
+    "low":   "Endelea Hivyo"
+  },
+  "history": {
+    "title":     "Historia ya Alama",
+    "session":   "Kipindi",
+    "change":    "Mabadiliko",
+    "noHistory": "Hakuna historia ya alama bado. Hesabu alama yako ya kwanza!"
+  },
+  "settings": {
+    "title":        "Mipangilio",
+    "profile":      "Wasifu wa Biashara",
+    "security":     "Nywila na Usalama",
+    "platforms":    "Majukwaa Yaliyounganishwa",
+    "language":     "Lugha",
+    "deleteAccount":"Futa Akaunti",
+    "saveChanges":  "Hifadhi Mabadiliko",
+    "lastSynced":   "Ilisawazishwa mara ya mwisho",
+    "syncNow":      "Sawazisha Sasa",
+    "connected":    "Imeshikamana",
+    "notConnected": "Haijashikamana"
+  },
+  "common": {
+    "loading":  "Inapakia...",
+    "save":     "Hifadhi",
+    "cancel":   "Ghairi",
+    "back":     "Rudi",
+    "next":     "Endelea",
+    "done":     "Imekamilika",
+    "connect":  "Unganisha",
+    "error":    "Hitilafu imetokea. Jaribu tena.",
+    "required": "Sehemu hii inahitajika"
+  }
+}
