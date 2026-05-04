@@ -16,7 +16,7 @@ const router = Router();
 router.use(requireAuth);
 
 // ── Calculate + save score ────────────────────────────────────────────────────
-router.post("/", async (req, res) => {
+router.post("/score", async (req, res) => {
   const {
     profileComplete, postFreq, engagement, responsiveness,
     platforms, businessName, sector, location,
@@ -44,18 +44,18 @@ router.post("/", async (req, res) => {
     const saved = await prisma.$transaction(async (tx) => {
       const score = await tx.score.create({
         data: {
-          userId:          req.user.id,
-          score:           scoreValue,
+          userId: req.user.id,
+          score: scoreValue,
           grade,
           profileComplete: Number(profileComplete),
-          postFreq:        Number(postFreq),
-          engagement:      Number(engagement),
-          responsiveness:  Number(responsiveness),
-          platformCount:   platforms?.length || 0,
-          platforms:       platforms || [],
-          businessName:    businessName?.trim() || null,
-          sector:          sector || null,
-          location:        location || null,
+          postFreq: Number(postFreq),
+          engagement: Number(engagement),
+          responsiveness: Number(responsiveness),
+          platformCount: platforms?.length || 0,
+          platforms: platforms || [],
+          businessName: businessName?.trim() || null,
+          sector: sector || null,
+          location: location || null,
           source,
         },
       });
@@ -63,13 +63,13 @@ router.post("/", async (req, res) => {
       // Store paired EN/SW recs
       await tx.recommendation.createMany({
         data: recsEn.map((rec, i) => ({
-          scoreId:  score.id,
-          icon:     rec.icon,
+          scoreId: score.id,
+          icon: rec.icon,
           priority: rec.priority,
-          titleEn:  rec.title,
-          titleSw:  recsSw[i]?.title || rec.title,
-          descEn:   rec.desc,
-          descSw:   recsSw[i]?.desc || rec.desc,
+          titleEn: rec.title,
+          titleSw: recsSw[i]?.title || rec.title,
+          descEn: rec.desc,
+          descSw: recsSw[i]?.desc || rec.desc,
         })),
       });
 
@@ -81,7 +81,7 @@ router.post("/", async (req, res) => {
       await prisma.user.update({
         where: { id: req.user.id },
         data: { hasOnboarded: true },
-      }).catch(() => {}); // Non-fatal
+      }).catch(() => { }); // Non-fatal
     }
 
     const recs = language === "sw"
@@ -89,19 +89,19 @@ router.post("/", async (req, res) => {
       : recsEn;
 
     res.json({
-      id:             saved.id,
-      score:          scoreValue,
+      id: saved.id,
+      score: scoreValue,
       grade,
       recs,
       businessName,
       sector,
       location,
-      platforms:      platforms || [],
+      platforms: platforms || [],
       profileComplete: Number(profileComplete),
-      postFreq:        Number(postFreq),
-      engagement:      Number(engagement),
-      responsiveness:  Number(responsiveness),
-      date:   new Date().toLocaleDateString("en-KE", { month: "short", day: "numeric" }),
+      postFreq: Number(postFreq),
+      engagement: Number(engagement),
+      responsiveness: Number(responsiveness),
+      date: new Date().toLocaleDateString("en-KE", { month: "short", day: "numeric" }),
       timestamp: saved.createdAt.getTime(),
     });
   } catch (err) {
@@ -123,25 +123,25 @@ router.get("/history", async (req, res) => {
     });
 
     const result = scores.map(s => ({
-      id:             s.id,
-      score:          s.score,
-      grade:          s.grade,
+      id: s.id,
+      score: s.score,
+      grade: s.grade,
       profileComplete: s.profileComplete,
-      postFreq:        s.postFreq,
-      engagement:      s.engagement,
-      responsiveness:  s.responsiveness,
-      platforms:       s.platforms,
-      businessName:    s.businessName,
-      sector:          s.sector,
-      location:        s.location,
-      source:          s.source,
-      date:   s.createdAt.toLocaleDateString("en-KE", { month: "short", day: "numeric" }),
+      postFreq: s.postFreq,
+      engagement: s.engagement,
+      responsiveness: s.responsiveness,
+      platforms: s.platforms,
+      businessName: s.businessName,
+      sector: s.sector,
+      location: s.location,
+      source: s.source,
+      date: s.createdAt.toLocaleDateString("en-KE", { month: "short", day: "numeric" }),
       timestamp: s.createdAt.getTime(),
       recs: s.recommendations.map(r => ({
-        icon:     r.icon,
+        icon: r.icon,
         priority: r.priority,
-        title:    lang === "sw" ? r.titleSw : r.titleEn,
-        desc:     lang === "sw" ? r.descSw  : r.descEn,
+        title: lang === "sw" ? r.titleSw : r.titleEn,
+        desc: lang === "sw" ? r.descSw : r.descEn,
       })),
     }));
 

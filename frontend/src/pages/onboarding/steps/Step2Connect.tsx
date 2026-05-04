@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '../../../context/AuthContext'
 
 const PLATFORMS = [
   { id:'facebook',  emoji:'📘', label:'Facebook',        canConnect:true  },
@@ -8,8 +10,17 @@ const PLATFORMS = [
   { id:'tiktok',    emoji:'🎵', label:'TikTok',          canConnect:false, note:'Manual only' },
 ]
 
-export function Step2Connect({ onNext, onBack }: { onNext:()=>void, onBack:()=>void }) {
+export function Step2Connect({ onBack }: { onBack:()=>void }) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { refreshUser } = useAuth()
+
+  const handleFinish = async () => {
+    // Refresh user to mark as onboarded, then navigate
+    await refreshUser()
+    navigate('/dashboard')
+  }
+
   return (
     <div>
       <h2 className='text-xl font-bold text-slate-800 mb-1'>{t('onboarding.step2Title')}</h2>
@@ -36,12 +47,12 @@ export function Step2Connect({ onNext, onBack }: { onNext:()=>void, onBack:()=>v
           className='flex-1 py-2.5 border border-slate-300 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors'>
           ← {t('common.back')}
         </button>
-        <button onClick={onNext}
+        <button onClick={handleFinish}
           className='flex-1 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-semibold transition-colors'>
-          {t('onboarding.calculateScore')}
+          Go to Dashboard →
         </button>
       </div>
-      <button onClick={onNext} className='w-full text-center text-sm text-slate-400 mt-3 hover:text-slate-600'>
+      <button onClick={handleFinish} className='w-full text-center text-sm text-slate-400 mt-3 hover:text-slate-600'>
         {t('onboarding.skipForNow')}
       </button>
     </div>

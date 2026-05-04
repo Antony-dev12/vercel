@@ -1,19 +1,24 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-const SECTORS = ['Retail','Food & Beverage','Fashion','Beauty & Wellness','Technology','Education','Transport','Other']
-const LOCATIONS = ['Nairobi','Mombasa','Kisumu','Nakuru','Eldoret','Thika','Nyeri','Malindi','Other']
+const SECTORS = ['Retail', 'Food & Beverage', 'Fashion', 'Beauty & Wellness', 'Technology', 'Education', 'Transport', 'Other']
+const LOCATIONS = ['Nairobi', 'Mombasa', 'Kisumu', 'Nakuru', 'Eldoret', 'Thika', 'Nyeri', 'Malindi', 'Other']
 
-export function Step1Business({ onNext }: { onNext: () => void }) {
+export interface BusinessData {
+  sector: string
+  location: string
+}
+
+export function Step1Business({ onNext }: { onNext: (data: BusinessData) => void }) {
   const { t } = useTranslation()
-  const [sector, setSector]     = useState('')
+  const [sector, setSector] = useState('')
   const [location, setLocation] = useState('')
-  const [error, setError]       = useState('')
+  const [error, setError] = useState('')
 
   const handleNext = () => {
     if (!sector || !location) { setError(t('common.required')); return }
     setError('')
-    onNext()
+    onNext({ sector, location })
   }
 
   const sel = 'w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-400 outline-none text-sm bg-white'
@@ -40,7 +45,7 @@ export function Step1Business({ onNext }: { onNext: () => void }) {
         <div>
           <label className='block text-sm font-medium text-slate-700 mb-2'>Preferred language</label>
           <div className='flex gap-3'>
-            {[{code:'en',label:'English'},{code:'sw',label:'Kiswahili'}].map(lang => (
+            {[{ code: 'en', label: 'English' }, { code: 'sw', label: 'Kiswahili' }].map(lang => (
               <button key={lang.code} type='button'
                 className='flex-1 py-2 border-2 border-slate-200 rounded-lg text-sm font-medium
                            text-slate-600 hover:border-teal-400 hover:text-teal-600 transition-all'>

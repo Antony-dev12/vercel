@@ -31,20 +31,24 @@ export function signToken(user) {
 }
 
 export function setAuthCookie(res, token) {
+  const isProd = process.env.NODE_ENV === "production";
   res.cookie("dpt_token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: isProd,
+    // "none" is required for cross-origin requests (frontend/backend on different Render subdomains)
+    // "lax" is fine for local dev (same origin)
+    sameSite: isProd ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
   });
 }
 
 export function clearAuthCookie(res) {
+  const isProd = process.env.NODE_ENV === "production";
   res.cookie("dpt_token", "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
     maxAge: 0,
     path: "/",
   });
