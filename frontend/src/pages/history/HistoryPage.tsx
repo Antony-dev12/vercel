@@ -1,19 +1,11 @@
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, ReferenceLine
 } from 'recharts'
-
-const MOCK_HISTORY = [
-  { date: 'Jan 1',  score: 42, grade: 'D' },
-  { date: 'Jan 15', score: 48, grade: 'D' },
-  { date: 'Feb 1',  score: 51, grade: 'C' },
-  { date: 'Feb 15', score: 55, grade: 'C' },
-  { date: 'Mar 1',  score: 58, grade: 'C' },
-  { date: 'Mar 15', score: 60, grade: 'C' },
-  { date: 'Apr 1',  score: 63, grade: 'C' },
-  { date: 'Apr 15', score: 67, grade: 'C' },
-]
+import { scoreApi } from '../../lib/api'
+import type { ScoreResult } from '../../lib/api'
 
 const GRADE_BANDS = [
   { min: 80, label: 'A', color: '#0D9488' },
@@ -51,11 +43,72 @@ function CustomTooltip({ active, payload, label }: TooltipProps) {
 }
 
 export default function HistoryPage() {
-  const { t } = useTranslation()
-  const latest  = MOCK_HISTORY[MOCK_HISTORY.length - 1]
-  const earliest = MOCK_HISTORY[0]
-  const change  = latest.score - earliest.score
-  const isUp    = change >= 0
+  const { t, i18n } = useTranslation()
+  const [history, setHistory] = useState<ScoreResult[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    const lang = i18n.language?.startsWith('sw') ? 'sw' : 'en'
+    scoreApi.history(lang)
+      .then(res => setHistory(res.data))
+      .catch(() => setError('Could not load score history. Please try again.'))
+      .finally(() => setLoading(false))
+  }, [i18n.language])
+
+  const latest   = history[history.length - 1]
+  const earliest = history[0]
+  const change   = latest && earliest ? latest.score - earliest.score : 0
+  const isUp     = change >= 0
+
+  // ── Loading ──────────────────────────────────────────────────────────────────
+  if (loading) {
+    return (
+      <div className='p-6 max-w-2xl mx-auto flex flex-col items-center justify-center min-h-[60vh] gap-4'>
+        <div className='w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin' />
+        <p className='text-slate-500 text-sm'>Loading your score history…</p>
+      </div>
+    )
+  }
+
+  // ── Error ────────────────────────────────────────────────────────────────────
+  if (error) {
+    return (
+      <div className='p-6 max-w-2xl mx-auto flex flex-col items-center justify-center min-h-[60vh] gap-4'>
+        <div className='w-14 h-14 bg-red-50 rounded-full flex items-center justify-center'>
+          <svg className='w-7 h-7 text-red-400' fill='none' stroke='currentColor' strokeWidth={1.8} viewBox='0 0 24 24'>
+            <path strokeLinecap='round' strokeLinejoin='round' d='M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z' />
+          </svg>
+        </div>
+        <p className='text-red-600 text-sm font-medium'>{error}</p>
+      </div>
+    )
+  }
+
+  // ── Empty state ──────────────────────────────────────────────────────────────
+  if (history.length === 0) {
+    return (
+      <div className='p-6 max-w-2xl mx-auto flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center'>
+        <div className='w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center'>
+          <svg className='w-8 h-8 text-teal-400' fill='none' stroke='currentColor' strokeWidth={1.5} viewBox='0 0 24 24'>
+            <path strokeLinecap='round' strokeLinejoin='round' d='M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z' />
+          </svg>
+        </div>
+        <div>
+          <h2 className='text-lg font-bold text-slate-800 mb-1'>No scores yet</h2>
+          <p className='text-slate-500 text-sm max-w-xs'>
+            Run your first digital presence check on the Dashboard to start tracking your score over time.
+          </p>
+        </div>
+        <a
+          href='/dashboard'
+          className='mt-2 px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-lg transition-colors'
+        >
+          Go to Dashboard
+        </a>
+      </div>
+    )
+  }
 
   return (
     <div className='p-6 max-w-2xl mx-auto'>
@@ -95,11 +148,11 @@ export default function HistoryPage() {
       <div className='bg-white rounded-2xl border border-slate-200 p-6 mb-6'>
         <div className='flex justify-between items-center mb-6'>
           <h2 className='font-bold text-slate-800'>Score Timeline</h2>
-          <span className='text-xs text-slate-400'>{MOCK_HISTORY.length} data points</span>
+          <span className='text-xs text-slate-400'>{history.length} data point{history.length !== 1 ? 's' : ''}</span>
         </div>
 
         <ResponsiveContainer width='100%' height={280}>
-          <LineChart data={MOCK_HISTORY} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
+          <LineChart data={history} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
             <CartesianGrid strokeDasharray='3 3' stroke='#F1F5F9' />
             <XAxis
               dataKey='date'
@@ -128,6 +181,35 @@ export default function HistoryPage() {
             />
           </LineChart>
         </ResponsiveContainer>
+      </div>
+
+      {/* Score log table */}
+      <div className='bg-white rounded-2xl border border-slate-200 p-6 mb-6'>
+        <h3 className='font-bold text-slate-800 mb-4'>Score Log</h3>
+        <div className='space-y-2'>
+          {[...history].reverse().map((entry, i) => (
+            <div key={entry.id ?? i} className='flex items-center justify-between py-2 border-b border-slate-50 last:border-0'>
+              <div className='flex items-center gap-3'>
+                <div
+                  className='w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white'
+                  style={{ background: getGradeColor(entry.score) }}
+                >
+                  {entry.grade}
+                </div>
+                <div>
+                  <p className='text-sm font-semibold text-slate-700'>{entry.date}</p>
+                  {entry.businessName && (
+                    <p className='text-xs text-slate-400'>{entry.businessName}</p>
+                  )}
+                </div>
+              </div>
+              <div className='text-right'>
+                <p className='text-lg font-black' style={{ color: getGradeColor(entry.score) }}>{entry.score}</p>
+                <p className='text-xs text-slate-400 capitalize'>{entry.source ?? 'manual'}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Grade bands legend */}

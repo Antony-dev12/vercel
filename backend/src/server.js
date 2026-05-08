@@ -52,7 +52,15 @@ const app = express();
 
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(cors({
-  origin:      process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    // Allow any localhost port in development
+    if (origin.startsWith("http://localhost:") || origin === (process.env.FRONTEND_URL)) {
+      return callback(null, true);
+    }
+    callback(new Error("Not allowed by CORS"));
+  },
   credentials: true, // required for cookies
 }));
 app.use(express.json());
