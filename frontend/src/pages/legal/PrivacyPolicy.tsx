@@ -22,7 +22,7 @@ export default function PrivacyPolicy() {
             <div className='w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center shadow-lg shadow-teal-200'>
               <span className='text-white font-black text-xs'>D</span>
             </div>
-            <span className='font-black text-slate-800 text-sm tracking-tight'>Vercel</span>
+            <span className='font-black text-slate-800 text-sm tracking-tight'>RadaBiz</span>
           </div>
         </div>
       </header>
@@ -144,7 +144,7 @@ export default function PrivacyPolicy() {
 
             {/* Footer Note */}
             <div className='mt-24 pt-12 border-t border-slate-100 text-center text-slate-400 text-sm font-medium'>
-              © 2026 Vercel. All rights reserved. Registered under Kenyan Law.
+              © 2026 RadaBiz. All rights reserved. Registered under Kenyan Law.
             </div>
           </div>
         </div>

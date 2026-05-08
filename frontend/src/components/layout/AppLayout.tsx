@@ -44,7 +44,7 @@ export default function AppLayout() {
           <div className='w-8 h-8 rounded-xl bg-teal-500 flex items-center justify-center shadow-lg shadow-teal-200'>
             <span className='text-white font-black text-sm tracking-tighter'>D</span>
           </div>
-          <span className='font-black text-slate-800 tracking-tight'>Vercel</span>
+          <span className='font-black text-slate-800 tracking-tight'>RadaBiz</span>
         </div>
 
         {/* Nav links */}
