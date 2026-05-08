@@ -1,5 +1,9 @@
-# Render Blueprint — Digital Presence Tracker
-# Deploys: PostgreSQL DB + Node.js backend + React frontend (static site)
+# Render Blueprint — RadaBiz
+# NOTE: Render no longer offers free web services.
+# For FREE deployment use:
+#   Frontend → Vercel (vercel.com)  — set root dir to /frontend
+#   Backend  → Railway (railway.app) — set root dir to /backend
+# This file is kept for reference only.
 # Docs: https://render.com/docs/blueprint-spec
 
 databases:
@@ -14,7 +18,7 @@ services:
   - type: web
     name: radabiz-api
     runtime: node
-    plan: starter
+    plan: free
     rootDir: backend
     buildCommand: npm install && npx prisma generate && npx prisma migrate deploy
     startCommand: node src/server.js
