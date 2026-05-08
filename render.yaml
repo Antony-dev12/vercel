@@ -3,16 +3,16 @@
 # Docs: https://render.com/docs/blueprint-spec
 
 databases:
-  - name: dpt-db
+  - name: radabiz-db
     plan: free          # 90-day free PostgreSQL on Render
-    databaseName: dpt_db
-    user: dpt_user
+    databaseName: radabiz_db
+    user: radabiz_user
 
 services:
 
   # ── Backend API ─────────────────────────────────────────────────────────────
   - type: web
-    name: dpt-backend
+    name: radabiz-api
     runtime: node
     plan: free
     rootDir: backend
@@ -24,11 +24,11 @@ services:
       # Database — auto-wired from the DB above
       - key: DATABASE_URL
         fromDatabase:
-          name: dpt-db
+          name: radabiz-db
           property: connectionString
       - key: DIRECT_URL
         fromDatabase:
-          name: dpt-db
+          name: radabiz-db
           property: connectionString
 
       - key: NODE_ENV
@@ -46,8 +46,8 @@ services:
         value: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2
 
       # ⚠️  Set these MANUALLY in Render dashboard after first deploy:
-      #     FRONTEND_URL  →  your frontend Render URL  e.g. https://dpt-frontend.onrender.com
-      #     BACKEND_URL   →  your backend Render URL   e.g. https://dpt-backend.onrender.com
+      #     FRONTEND_URL  →  your frontend Render URL  e.g. https://radabiz-app.onrender.com
+      #     BACKEND_URL   →  your backend Render URL   e.g. https://radabiz-api.onrender.com
       - key: FRONTEND_URL
         sync: false
       - key: BACKEND_URL
@@ -55,7 +55,7 @@ services:
 
   # ── Frontend Static Site ────────────────────────────────────────────────────
   - type: web
-    name: dpt-frontend
+    name: radabiz-app
     runtime: static
     plan: free
     rootDir: frontend
@@ -70,6 +70,6 @@ services:
 
     envVars:
       # ⚠️  Set this MANUALLY in Render dashboard after the backend is deployed:
-      #     VITE_API_URL  →  your backend URL  e.g. https://dpt-backend.onrender.com
+      #     VITE_API_URL  →  your backend URL  e.g. https://radabiz-api.onrender.com
       - key: VITE_API_URL
         sync: false
